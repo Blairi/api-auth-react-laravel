@@ -1,9 +1,11 @@
-import React from 'react'
+import { BrowserRouter } from "react-router-dom";
+
+import { AppRouter } from "./router/AppRouter"
 
 export const App = () => {
   return (
-    <div>
-      <h1 className='font-bold'>Hola mundo</h1>
-    </div>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
   )
 }
