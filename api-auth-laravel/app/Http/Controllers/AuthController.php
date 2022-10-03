@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -27,7 +28,7 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => 'Invalid Inputs',
                 'error' => $validator->errors()
-            ], 401);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User();
@@ -43,7 +44,7 @@ class AuthController extends Controller
             'message' => 'User successfully registered',
             'user' => $user,
             'token' => $token
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 
     public function login(Request $request)
@@ -58,7 +59,7 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => 'Invalid Inputs',
                 'error' => $validator->errors()
-            ], 422);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (Auth::attempt(['email'=>$request->email, 'password'=>$request->password])) {
@@ -73,12 +74,12 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_at' => $expires_at
-            ], 200);
+            ], Response::HTTP_OK);
         } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid Credentials',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -92,16 +93,17 @@ class AuthController extends Controller
         $token = PersonalAccessToken::findToken($accessToken);
 
         if(!$token){
-            return [
-                'message' => 'invalid bearer token.',
-            ];
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         // Revoke token
         $token->delete();
 
-        return [
-            'message' => 'user logged out.',
-        ];
+        return response()->json([
+            'status' => true,
+        ], Response::HTTP_OK);
     }
 }
