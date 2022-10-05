@@ -106,7 +106,6 @@ class ProductController extends Controller
         }
 
         $product->name = $request_data['name'];
-        $product->mrp = $request_data['mrp'];
         $product->price = $request_data['price'];
         $product->quantity = $request_data['quantity'];
         $product->save();
