@@ -20,7 +20,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:3|max:50',
             'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|confirmed|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -81,6 +81,28 @@ class AuthController extends Controller
                 'message' => 'Invalid Credentials',
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function validateUserToken(Request $request)
+    {
+        $accessToken = $request->bearerToken();
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if(!$token){
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = User::find($token->tokenable_id);
+
+        return response()->json([
+            'data' => $user,
+            'status' => true,
+            'message' => 'Valid token',
+        ], Response::HTTP_OK);
     }
 
     public function logout(Request $request)
