@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { CreateProduct, EditProduct, Home } from "../pages"
 
 export const AppRoutes = () => {
+  
   return (
     <Routes>
       
@@ -9,6 +10,8 @@ export const AppRoutes = () => {
       <Route path="/products/create" element={<CreateProduct />}/>
       <Route path="/products/:id" element={<EditProduct />}/>
         
+      <Route path="/*" element={<Navigate to='/' />} />
+      
     </Routes>
   )
 }
