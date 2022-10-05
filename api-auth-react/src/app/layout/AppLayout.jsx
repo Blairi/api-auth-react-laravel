@@ -1,5 +1,15 @@
+import { useDispatch } from "react-redux"
+import { startLogout } from "../../store/auth/thunks";
 
 export const AppLayout = ({ children, title }) => {
+
+  const dispatch = useDispatch();
+
+  const onLogout = () => {
+    const token = sessionStorage.getItem("token");
+    dispatch( startLogout({ token }) );
+  }
+
   return (
     <div className="bg-indigo-500 min-h-screen grid place-items-center">
       <div className="w-[90%] max-w-[1200px]">
@@ -7,6 +17,7 @@ export const AppLayout = ({ children, title }) => {
         <div className="flex justify-between items-center mb-5 bg-white p-5 rounded shadow">
           <h5 className="text-gray-500">Hello, Axel</h5>
           <button
+            onClick={ onLogout }
             className="bg-red-500 text-white px-2 py-1 rounded"
           >Logout</button>
         </div>
