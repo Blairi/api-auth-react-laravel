@@ -1,5 +1,7 @@
-import { useSelector } from "react-redux"
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { startLoadingProducts } from "../../store/app/thunks";
 import { LoadingSpinner } from "../../ui/LoadingSpinner";
 import { ProductList } from "../components/ProductList";
 import { AppLayout } from "../layout/AppLayout"
@@ -8,6 +10,14 @@ export const Home = () => {
 
 
   const { loading } = useSelector(state => state.app);
+
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+
+    dispatch( startLoadingProducts() );
+
+  }, []);
   
 
   return (
