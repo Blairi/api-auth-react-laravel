@@ -1,7 +1,15 @@
+import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { LoadingSpinner } from "../../ui/LoadingSpinner";
+import { ProductList } from "../components/ProductList";
 import { AppLayout } from "../layout/AppLayout"
 
 export const Home = () => {
+
+
+  const { loading } = useSelector(state => state.app);
+  
+
   return (
     <AppLayout title='Home'>
 
@@ -14,61 +22,13 @@ export const Home = () => {
           >Create</Link>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className={loading ? 'invert flex justify-center' : ''}>
 
-          <div className="bg-gray-300 p-2 rounded shadow">
-
-            <span className="font-bold text-lg">Laptop</span>
-            <p>Price: <span className="text-indigo-500 font-bold">$17,500</span></p>
-            <p>Quantity: <span className="text-indigo-500 font-bold">599</span></p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >Delete</button>
-              <Link
-                className="bg-orange-500 px-5 py-1 text-white rounded"
-                to='/products/12'
-              >Edit</Link>
-            </div>
-
-          </div>
-
-          <div className="bg-gray-300 p-2 rounded shadow">
-
-            <span className="font-bold text-lg">Laptop</span>
-            <p>Price: <span className="text-indigo-500 font-bold">$17,500</span></p>
-            <p>Quantity: <span className="text-indigo-500 font-bold">599</span></p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >Delete</button>
-              <Link
-                className="bg-orange-500 px-5 py-1 text-white rounded"
-                to='/products/12'
-              >Edit</Link>
-            </div>
-
-          </div>
-
-          <div className="bg-gray-300 p-2 rounded shadow">
-
-            <span className="font-bold text-lg">Laptop</span>
-            <p>Price: <span className="text-indigo-500 font-bold">$17,500</span></p>
-            <p>Quantity: <span className="text-indigo-500 font-bold">599</span></p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >Delete</button>
-              <Link
-                className="bg-orange-500 px-5 py-1 text-white rounded"
-                to='/products/12'
-              >Edit</Link>
-            </div>
-
-          </div>
+          {
+            loading
+              ? <LoadingSpinner />
+              : <ProductList />
+          }
 
         </div>
 
