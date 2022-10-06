@@ -13,5 +13,17 @@ class Product extends Model
         "name",
         "price",
         "quantity",
+        "user_id",
     ];
+
+    /**
+     * Get the user that owns the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

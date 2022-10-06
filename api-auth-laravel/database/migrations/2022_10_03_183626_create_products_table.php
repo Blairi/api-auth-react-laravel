@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('price');
             $table->string('quantity');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
