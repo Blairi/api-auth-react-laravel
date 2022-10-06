@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { validateUserToken } from "../services";
+import { startLoadingProducts } from "../store/app/thunks";
 import { login, logout } from "../store/auth/authSlice";
 
 export const useCheckAuth = () => {
@@ -28,6 +29,7 @@ export const useCheckAuth = () => {
       }
 
       dispatch( login(payload) );
+      dispatch( startLoadingProducts() );
 
     })()
 
