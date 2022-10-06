@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ProductController extends Controller
 {
@@ -14,14 +17,26 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+
+        $accessToken = $request->bearerToken();
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if(!$token){
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
+        }
         
+        $user = User::find($token->tokenable_id);
+
         return response()->json([
             "status" => true,
             "message" => "Product List",
-            "data" => $products
+            "data" => $user->products,
         ]);
     }
 
@@ -33,9 +48,20 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request_data = $request->all();
+        $accessToken = $request->bearerToken();
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if(!$token){
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = User::find($token->tokenable_id);
         
-        $validator = Validator::make($request_data, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'price' => 'required',
             'quantity' => 'required'
@@ -46,10 +72,16 @@ class ProductController extends Controller
                 'status' => false,
                 'message' => 'Invalid Inputs',
                 'error' => $validator->errors()
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        $product = Product::create($request_data);
+        $product = new Product();
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        $product->user_id = $user->id;
+
+        $product->save();
         
         return response()->json([
             "status" => true,
@@ -89,6 +121,20 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+
+        $accessToken = $request->bearerToken();
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if(!$token){
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $userId = $token->tokenable_id;
+
         $request_data = $request->all();
         
         $validator = Validator::make($request_data, [
@@ -102,7 +148,14 @@ class ProductController extends Controller
                 'status' => false,
                 'message' => 'Invalid Inputs',
                 'error' => $validator->errors()
-            ]);      
+            ], Response::HTTP_BAD_REQUEST);      
+        }
+
+        if($product->user_id !== $userId){
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid token',
+            ], Response::HTTP_BAD_REQUEST); 
         }
 
         $product->name = $request_data['name'];
@@ -123,9 +176,30 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
+        $accessToken = $request->bearerToken();
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if(!$token){
+            return response()->json([
+                'status' => false,
+                'message' => 'invalid bearer token',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $userId = $token->tokenable_id;
+
+        if($product->user_id !== $userId){
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid token',
+            ], Response::HTTP_BAD_REQUEST); 
+        }
+        
         $product->delete();
+
         return response()->json([
             "status" => true,
             "message" => "Product deleted successfully.",
