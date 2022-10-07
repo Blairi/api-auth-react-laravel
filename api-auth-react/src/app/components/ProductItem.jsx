@@ -1,6 +1,15 @@
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
+import { startSearchProduct } from "../../store/app/thunks";
 
 export const ProductItem = ({ product }) => {
+
+  const dispatch = useDispatch();
+
+  const onClick = (id) => {
+    dispatch( startSearchProduct({ id }) );
+  }
+
   return (
     <div className="bg-gray-300 p-2 rounded shadow">
 
@@ -13,6 +22,7 @@ export const ProductItem = ({ product }) => {
           className="bg-red-500 text-white px-2 py-1 rounded"
         >Delete</button>
         <Link
+          onClick={ () => onClick(product.id) }
           className="bg-orange-500 px-5 py-1 text-white rounded"
           to={`/products/${product.id}`}
         >Edit</Link>
