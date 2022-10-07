@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
-import { startSearchProduct } from "../../store/app/thunks";
+import { startDeleteProduct, startSearchProduct } from "../../store/app/thunks";
 
 export const ProductItem = ({ product }) => {
 
@@ -8,6 +8,10 @@ export const ProductItem = ({ product }) => {
 
   const onClick = (id) => {
     dispatch( startSearchProduct({ id }) );
+  }
+
+  const onDelete = (id) => {
+    dispatch( startDeleteProduct({ id }) );
   }
 
   return (
@@ -19,6 +23,7 @@ export const ProductItem = ({ product }) => {
 
       <div className="flex justify-end gap-3">
         <button
+          onClick={ () => onDelete(product.id) }
           className="bg-red-500 text-white px-2 py-1 rounded"
         >Delete</button>
         <Link

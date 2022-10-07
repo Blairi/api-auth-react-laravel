@@ -23,6 +23,10 @@ export const appSlice = createSlice({
       state.productUpdating = {};
       state.loading = false;
     },
+    deleteProduct: (state, {payload}) => {
+      state.products = state.products.filter( product => product.id !== payload.id );
+      state.loading = false;
+    },
     addNewProduct: (state, { payload }) => {
       state.products.push( payload );
       state.loading = false;
@@ -42,10 +46,23 @@ export const appSlice = createSlice({
 
       });
       state.loading = false;
+    },
+    cleanProductsLogout: (state) => {
+      state.products = []
+      state.productUpdating = null;
+      state.loading = false;
     }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { startLoading, setProducts, addNewProduct, setProductUpdating, updateProduct, setError } = appSlice.actions;
+export const { 
+  startLoading, 
+  setProducts, 
+  addNewProduct, 
+  setProductUpdating, 
+  updateProduct, 
+  setError, 
+  deleteProduct,
+  cleanProductsLogout } = appSlice.actions;

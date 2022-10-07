@@ -1,6 +1,8 @@
-import { createProduct, getProduct, getProducts, updateProduct } from "../../services";
+import { createProduct, deleteProduct, getProducts, updateProduct } from "../../services";
+
 import { addNewProduct, setProducts, setProductUpdating, startLoading } from "./appSlice";
 import { updateProduct as updateProductSlice } from "./appSlice";
+import { deleteProduct as deleteProductSlice } from "./appSlice";
 
 export const startLoadingProducts = () => {
   return async ( dispatch, getState ) => {
@@ -55,6 +57,20 @@ export const startUpdateProduct = ({ id, name, price, quantity }) => {
     
     dispatch( updateProductSlice({ ...product }) ); // Updating redux state
     dispatch( setProductUpdating(null) ); // Redirect user
+
+  }
+}
+
+export const startDeleteProduct = ({ id }) => {
+  return async ( dispatch, getState ) => {
+
+    dispatch( startLoading() );
+
+    const { token } = getState().auth;
+
+    await deleteProduct({ token, id })
+
+    dispatch( deleteProductSlice({ id }) );
 
   }
 }
