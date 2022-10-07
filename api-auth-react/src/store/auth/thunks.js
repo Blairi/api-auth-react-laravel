@@ -1,6 +1,7 @@
 import { checkingCredentials, login, logout } from "./authSlice"
 
 import { loginUser, logoutUser, registerUser, validateUserToken } from "../../services";
+import { cleanProductsLogout } from "../app/appSlice";
 
 export const startCreatingUser = ({ displayName, email, password, password_confirmation }) => {
   return async (dispatch) => {
@@ -76,6 +77,8 @@ export const startLogout = ( {token} ) => {
     }
 
     sessionStorage.removeItem("token");
+    
+    dispatch( cleanProductsLogout() );
     dispatch( logout() );
 
   }
